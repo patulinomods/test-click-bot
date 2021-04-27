@@ -76,10 +76,10 @@ except Exception as e:
 os.system("clear")
 banner()
 
-api_id = '1318085'
-api_hash = 'e365af2f55bd59cf77ac7c149591d4d4'
+api_id = '5334015'
+api_hash = '0f64b39b838c3304c0456479a09b04c8'
 phone_number = input("\n[*] Coloque Seu Numero >> \x1b[0m")#'+639458513800'
-client = TelegramClient('session/'+phone_number,api_id,api_hash+'ByPato')
+client = TelegramClient('session/'+phone_number,api_id,api_hash)
 client.connect()
 if not client.is_user_authorized():
 	try:
