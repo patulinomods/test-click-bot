@@ -140,29 +140,17 @@ def claim(bot_channel):
         sys.exit()
 
 while True:
-	p1 = multiprocessing.Process(target=claim,args=['@Dogecoin_click_bot'])
-	p2 = multiprocessing.Process(target=claim,args=['@BCH_clickbot'])
 	p3 = multiprocessing.Process(target=claim,args=['@Zcash_click_bot'])
-	p4 = multiprocessing.Process(target=claim,args=['@Litecoin_click_bot'])
-	p5 = multiprocessing.Process(target=claim,args=['@BitcoinClick_bot'])
 
 	try:
-		p1.start()
-		p2.start()
 		p3.start()
-		p4.start()
-		p5.start()
 	except:
 		print("Problem with the starting process . . .")
 
 	sleep(1)
 
 	try:
-		p1.join()
-		p2.join()
 		p3.join()
-		p4.join()
-		p5.join()
 	except:
 		print("Problem with the joining process . . .")
 
