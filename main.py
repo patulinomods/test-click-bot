@@ -1,12 +1,12 @@
 import os
 
-#os.system("clear")
-#os.system("pip3 install bs4")
-#os.system("pip3 install pyasn1")
-#os.system("pip3 install rsa")
-#os.system("pip3 install pyaes")
-#os.system("pip3 install requests")
-#os.system("pip3 install telethon")
+os.system("clear")
+os.system("pip3 install bs4")
+os.system("pip3 install pyasn1")
+os.system("pip3 install rsa")
+os.system("pip3 install pyaes")
+os.system("pip3 install requests")
+os.system("pip3 install telethon")
 
 from telethon import TelegramClient, sync, events
 from telethon.tl.functions.messages import GetHistoryRequest, GetBotCallbackAnswerRequest
@@ -58,9 +58,9 @@ if not os.path.exists('session'):
 banner()
 try:
 	header = {"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"}
-	getpass = requests.get("https://that-clickbot.000webhostapp.com/getpass.html",headers=header).text
+	getpass = requests.get("https://pastebin.com/raw/ANi6UNKH",headers=header).text
 	print("\n\n[*] Get password here : " + str(getpass))
-	pass_link = requests.get("https://that-clickbot.000webhostapp.com/url.html",headers=header).text
+	pass_link = requests.get("https://pastebin.com/raw/ANi6UNKH",headers=header).text
 	web = requests.get(pass_link,headers=header)
 	page = BeautifulSoup(web.text,"html.parser")
 	password = str(page.find("h1"))
