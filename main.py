@@ -1,168 +1,173 @@
-import json,re,sys,os
-import getpass
-import argparse
-from time import sleep
-try:
-   import colorama
-   from colorama import Fore, Back, Style
-   colorama.init(autoreset=True)
-   hijau = Style.RESET_ALL+Style.BRIGHT+Fore.GREEN
-   res = Style.RESET_ALL
-   abu2 = Style.DIM+Fore.WHITE
-   ungu2 = Style.NORMAL+Fore.MAGENTA
-   ungu = Style.RESET_ALL+Style.BRIGHT+Fore.MAGENTA
-   hijau2 = Style.NORMAL+Fore.GREEN
-   yellow2 = Style.NORMAL+Fore.YELLOW
-   yellow = Style.RESET_ALL+Style.BRIGHT+Fore.YELLOW
-   red2 = Style.NORMAL+Fore.RED
-   red = Style.RESET_ALL+Style.BRIGHT+Fore.RED
-except:
-   print ("Hmm Sepertinya Modul Colorama Belum Terinstall\n\n\n")
-   sys.exit()
+import os
 
-try:
-   import requests
-   from bs4 import BeautifulSoup
-except:
-   print ("Hmm Sepertinya Modul Requests Dan BS4 Belum Terinstall\n\n\n")
-   sys.exit()
+#os.system("clear")
+#os.system("pip3 install bs4")
+#os.system("pip3 install pyasn1")
+#os.system("pip3 install rsa")
+#os.system("pip3 install pyaes")
+#os.system("pip3 install requests")
+#os.system("pip3 install telethon")
 
 from telethon import TelegramClient, sync, events
 from telethon.tl.functions.messages import GetHistoryRequest, GetBotCallbackAnswerRequest
 from telethon.errors import SessionPasswordNeededError
-from telethon.errors import FloodWaitError
+from bs4 import BeautifulSoup
+from time import sleep
+import requests, json, re, sys
+import multiprocessing
+numbers = []
+os.system("clear")
 
+def banner():
+    banner = """
+\x1b[0;30;41m                                                                \x1b[0m   
+\x1b[0;30;41m|██████╗ ██╗   ██╗ ██████╗██╗  ██╗ ██████╗ ██████╗ ██╗███╗   ██╗\x1b[0m   
+\x1b[0;30;41m|██╔══██╗██║   ██║██╔════╝██║ ██╔╝██╔════╝██╔═══██╗██║████╗  ██║\x1b[0m    
+\x1b[0;30;41m|██║  ██║██║   ██║██║     █████╔╝ ██║     ██║   ██║██║██╔██╗ ██║\x1b[0m  
+\x1b[0;30;41m|██║  ██║██║   ██║██║     ██╔═██╗ ██║     ██║   ██║██║██║╚██╗██║\x1b[0m    
+\x1b[0;30;41m|██████╔╝╚██████╔╝╚██████╗██║  ██╗╚██████╗╚██████╔╝██║██║ ╚████║\x1b[0m
+\x1b[0;30;41m|╚═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝\x1b[0m   
+\x1b[0;30;41m                                                                \x1b[0m   
 
+\x1b[0;30;43m|=============================================================|\x1b[0m  
+\x1b[0;30;43m|\x1b[1;32;40m           \x1b[0;30;41m[ D U C K  C O I N  M I N E R ]\x1b[1;32;40m                   \x1b[0;30;43m|\x1b[0m
+\x1b[0;30;43m|\x1b[3;31;40m                   VENHA MINERAR!!                           \x1b[0;30;43m|\x1b[0m
+\x1b[0;30;43m|\x1b[0m\x1b[0;32;40m                   BY PATO MAKER !                           \x1b[0m\x1b[0;30;43m|\x1b[0m
+\x1b[0;30;43m|=============================================================|\x1b[0m 
+      \x1b[0;30;43m|\x1b[0;30;47m   [ SISTEMA DE MINERAÇAO AUTOMATICO ]   \x1b[0;30;43m|\x1b[0m
+      \x1b[0;30;43m|\x1b[0;30;47m           [ VIA TELEGRAM ]              \x1b[0;30;43m|\x1b[0m
+      \x1b[0;30;43m|-----------------------------------------|\x1b[0m
+"""
+    for char in banner:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        sleep(0.01)
 
-banner = Style.NORMAL+Fore.MAGENTA+"""
-██████╗ ██╗   ██╗ ██████╗██╗  ██╗ ██████╗ ██████╗ ██╗███╗   ██╗
-██╔══██╗██║   ██║██╔════╝██║ ██╔╝██╔════╝██╔═══██╗██║████╗  ██║
-██║  ██║██║   ██║██║     █████╔╝ ██║     ██║   ██║██║██╔██╗ ██║
-██║  ██║██║   ██║██║     ██╔═██╗ ██║     ██║   ██║██║██║╚██╗██║
-██████╔╝╚██████╔╝╚██████╗██║  ██╗╚██████╗╚██████╔╝██║██║ ╚████║
-║═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝"""+Style.DIM+Fore.WHITE+"""@ClickBeeBot
-"""+Style.NORMAL+Fore.GREEN+"""╚═════════════════════════════════════════════════════════
-"""+Style.BRIGHT+Fore.GREEN+"""Criador  """+Style.DIM+Fore.WHITE+""" :"""+Style.RESET_ALL+""" PatoMaker
-"""+Style.BRIGHT+Fore.GREEN+"""Suporte"""+Style.DIM+Fore.WHITE+"""  : """+Style.RESET_ALL+"""+55 31 996891466"""
+    join1 = "\x1b[0;32;40m Suporte: 55 31 996891466\x1b[0m"
+    join2 = "                                                  "
+    for _ in range(1):
+        print(join1,end="\r")
+        sleep(0.5)
+        print(join2,end="\r")
+        sleep(0.5)
+    print(join1,end="\r")
 
-if not os.path.exists("ByPato-Conexoes"):
-    os.makedirs("ByPato-Conexoes")
+if not os.path.exists('session'):
+    os.makedirs('session')
 
+banner()
+try:
+	header = {"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"}
+	getpass = requests.get("https://that-clickbot.000webhostapp.com/getpass.html",headers=header).text
+	print("\n\n[*] Get password here : " + str(getpass))
+	pass_link = requests.get("https://that-clickbot.000webhostapp.com/url.html",headers=header).text
+	web = requests.get(pass_link,headers=header)
+	page = BeautifulSoup(web.text,"html.parser")
+	password = str(page.find("h1"))
+	password = password.replace("<h1>","")
+	password = password.replace("</h1>","")
+	user_pass = input("[*] Enter script password >> ")
+	if user_pass != password:
+		print("Incorrect password! Try again. . .")
+		sys.exit()
+except Exception as e:
+	print(e)
 
-def login(nomor):
-  global client
-  api_id = 717425
-  api_hash = '322526d2c3350b1d3530de327cf08c07'
-  phone_number = nomor
+os.system("clear")
+banner()
 
-  client = TelegramClient("ByPato-Conexoes/"+phone_number, api_id, api_hash)
-  client.connect()
-  if not client.is_user_authorized():
+api_id = '1318085'
+api_hash = 'e365af2f55bd59cf77ac7c149591d4d4'
+phone_number = input("\n[*] Coloque Seu Numero >> \x1b[0m")#'+639458513800'
+client = TelegramClient('session/'+phone_number,api_id,api_hash+'ByPato')
+client.connect()
+if not client.is_user_authorized():
+	try:
+		client.send_code_request(phone_number)
+		client.sign_in(phone_number,input('\x1b[0;32;40m[*] Coloque o codigo enviado >> '))
+	except SessionPasswordNeededError:
+		password = input('\x1b[0;32;40mColoque Sua Senha de verificaçao >> ')
+		me = client.start(phone_number,password)
+
+def claim(bot_channel):
+    global client
+    channel_username = bot_channel
+    c = requests.session()
+    ua = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36'}
+    channel_entity = client.get_entity(channel_username)
     try:
-      client.send_code_request(phone_number)
-     
-      me = client.sign_in(phone_number, input(f"""
-██████╗ ██╗   ██╗ ██████╗██╗  ██╗ ██████╗ ██████╗ ██╗███╗   ██╗
-██╔══██╗██║   ██║██╔════╝██║ ██╔╝██╔════╝██╔═══██╗██║████╗  ██║
-██║  ██║██║   ██║██║     █████╔╝ ██║     ██║   ██║██║██╔██╗ ██║
-██║  ██║██║   ██║██║     ██╔═██╗ ██║     ██║   ██║██║██║╚██╗██║
-██████╔╝╚██████╔╝╚██████╗██║  ██╗╚██████╗╚██████╔╝██║██║ ╚████║
-║═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝
-║
-╚══>{hijau}Informe o codigo enviado para voce {res}: """))
-    except SessionPasswordNeededError:
-      passw = input(f"""
-██████╗ ██╗   ██╗ ██████╗██╗  ██╗ ██████╗ ██████╗ ██╗███╗   ██╗
-██╔══██╗██║   ██║██╔════╝██║ ██╔╝██╔════╝██╔═══██╗██║████╗  ██║
-██║  ██║██║   ██║██║     █████╔╝ ██║     ██║   ██║██║██╔██╗ ██║
-██║  ██║██║   ██║██║     ██╔═██╗ ██║     ██║   ██║██║██║╚██╗██║
-██████╔╝╚██████╔╝╚██████╗██║  ██╗╚██████╗╚██████╔╝██║██║ ╚████║
-║═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝
-║
-╚══> {hijau}Sua Senha do telegram {res}: """)
-      me = client.start(phone_number,passw)
-  myself = client.get_me()
-  os.system("clear")
-  print (banner)
-  print (f"{hijau}Numero Colocado: {res}",nomor)
-  print (f"{hijau}BEM VINDO ao DuckCoin Miner :{res}",myself.first_name,f"\n{hijau}Um automatizador de mineraçao de bitcoin no telegram\n\n")
+        for ulang in range(999999999):
+            print('\x1b[0;32;40m[*] Fetching URL - ' + str(bot_channel))
+            client.send_message(entity=channel_entity,message='ð¥ Visit sites')
+            sleep(3)
+            message_history = client(GetHistoryRequest(peer=channel_entity,limit=0,offset_date=None,offset_id=0,max_id=0,min_id=0,add_offset=0,hash=0))
+            channel_id = message_history.messages[0].id
+            if message_history.messages[0].message.find('Sorry, there are no new ads available.') != -1:
+                print('\x1b[3;31;40m[*] Ads run out! Try again later - ' + str(bot_channel))
+                break
+            url = message_history.messages[0].reply_markup.rows[0].buttons[0].url
+            print('\x1b[0;32;40m[*] Visiting the URL - ' + str(bot_channel))
 
+            r = c.get(url,headers=ua)
+            soup = BeautifulSoup(r.text,"html.parser")
 
-def tunggu(x):
-    sys.stdout.write("\r                                        \r")
-    for remaining in range(x, 0, -1):
-       sys.stdout.write("\r")
-       sys.stdout.write("{}[{}|{}]{} {:2d} {}Tentando Conectar".format(abu2,yellow2,abu2,res,remaining,hijau))
-       sys.stdout.flush()
-       sleep(0.125)
-       sys.stdout.write("\r")
-       sys.stdout.write("{}[{}/{}]{} {:2d} {}Tentando Conectar".format(abu2,yellow2,abu2,res,remaining,hijau))
-       sys.stdout.flush()
-       sleep(0.125)
-       sys.stdout.write("\r")
-       sys.stdout.write("{}[{}-{}]{} {:2d}{} Tentando Conectar".format(abu2,yellow2,abu2,res,remaining,hijau))
-       sys.stdout.flush()
-       sleep(0.125)
-       sys.stdout.write("\r")
-       sys.stdout.write("{}[{}\{}]{} {:2d}{} Tentando Conectar".format(abu2,yellow2,abu2,res,remaining,hijau))
-       sys.stdout.flush()
-       sleep(0.125)
-       sys.stdout.write("\r")
-       sys.stdout.write("{}[{}|{}]{} {:2d}{} Tentando Conectar".format(abu2,yellow2,abu2,res,remaining,hijau))
-       sys.stdout.flush()
-       sleep(0.125)
-       sys.stdout.write("\r")
-       sys.stdout.write("{}[{}/{}]{} {:2d} {}Tentando Conectar".format(abu2,yellow2,abu2,res,remaining,hijau))
-       sys.stdout.flush()
-       sleep(0.125)
-       sys.stdout.write("\r")
-       sys.stdout.write("{}[{}-{}]{} {:2d} {}Tentando Conectar".format(abu2,yellow2,abu2,res,remaining,hijau))
-       sys.stdout.flush()
-       sleep(0.125)
-       sys.stdout.write("\r")
-       sys.stdout.write("{}[{}\{}]{} {:2d}{} Tentando Conectar".format(abu2,yellow2,abu2,res,remaining,hijau))
-       sys.stdout.flush()
-       sleep(0.125)
-    sys.stdout.write("\r                                           \r")
-    sys.stdout.write(f"\r{abu2}[{yellow2}!{abu2}] {yellow}Ganhando Recompensa")
+            if soup.find('div',class_='g-recaptcha') is None and soup.find('div',id='headbar') is None:
+                sleep(2)
+                message_history = client(GetHistoryRequest(peer=channel_entity,limit=1,offset_date=None,offset_id=0,max_id=0,min_id=0,add_offset=0,hash=0))
+                message = message_history.messages[0].message
+                print("\x1b[0;32;40m[*] " + message + " - " + str(bot_channel))
+                if message_history.messages[0].message.find('Please stay on') != -1 or message_history.messages[0].message.find('You must stay') != -1:
+                    timer = re.findall(r'([\d.]*\d+)',message)
+                    sleep(int(timer[0]))
+                    sleep(3)
+            elif soup.find('div',id='headbar') is not None:
+                for data in soup.find_all('div',class_='container-fluid'):
+                    code = data.get('data-code')
+                    timer = data.get('data-timer')
+                    token = data.get('data-token')
+                    sleep(int(timer))
+                    r = c.post('https://dogeclick.com/reward',data={'code': code, 'token': token},headers=ua)
+                    message_history = client(GetHistoryRequest(peer=channel_entity,limit=1,offset_date=None,offset_id=0,max_id=0,min_id=0,add_offset=0,hash=0))
+                    message = message_history.messages[0].message
+                    print("\x1b[0;30;43m[*] Succesful Claim - " + str(bot_channel))
+            else:
+                print('\x1b[3;31;40m[*] Captcha detected - ' + str(bot_channel))
+                sleep(2)
+                client(GetBotCallbackAnswerRequest(channel_username,channel_id,data=message_history.messages[0].reply_markup.rows[1].buttons[1].data))
+                print ('\x1b[3;31;40m[*] Skip Captcha - ' + str(bot_channel), end="\r")
+    except:
+        print("Error Detected - " + str(bot_channel))
+        sys.exit()
 
+while True:
+	p1 = multiprocessing.Process(target=claim,args=['@Dogecoin_click_bot'])
+	p2 = multiprocessing.Process(target=claim,args=['@BCH_clickbot'])
+	p3 = multiprocessing.Process(target=claim,args=['@Zcash_click_bot'])
+	p4 = multiprocessing.Process(target=claim,args=['@Litecoin_click_bot'])
+	p5 = multiprocessing.Process(target=claim,args=['@BitcoinClick_bot'])
 
+	try:
+		p1.start()
+		p2.start()
+		p3.start()
+		p4.start()
+		p5.start()
+	except:
+		print("Problem with the starting process . . .")
 
-ua={"User-Agent": "Mozilla/5.0 (Linux; Android 5.1; A1603 Build/LMY47I; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.121 Mobile Safari/537.36"}
-c = requests.session()
+	sleep(1)
 
-if len(sys.argv)<2:
-    print(banner)
-    print(yellow2+"\n\n\nVoce Usou Errado, Use assim : python main.py +55xxxxxxxxxxx")
-    sys.exit(1)
+	try:
+		p1.join()
+		p2.join()
+		p3.join()
+		p4.join()
+		p5.join()
+	except:
+		print("Problem with the joining process . . .")
 
-login(sys.argv[1])
-channel_entity=client.get_entity("@ClickBeeBot")
-channel_username="@ClickBeeBot"
-while True: 
-    sys.stdout.write("\r                                             \r")
-    sys.stdout.write(f"\r{abu2}[{yellow2}!{abu2}]{yellow} Mencoba Mengambil URL")
-    client.send_message(entity=channel_entity,message="ð² Visit Links")
-    sleep(3)
-    posts = client(GetHistoryRequest(peer=channel_entity,limit=1,offset_date=None,offset_id=0,max_id=0,min_id=0,add_offset=0,hash=0))
-    if posts.messages[0].message.find("Aw snap! You can't visit any websites for now.") != -1:
-        sys.stdout.write("\r                                                 \r")
-        print (f"\n{abu2}[{red2}x{abu2}] {red}Iklan Sudah Habis Coba Lagi Besok")
-        break
-    else:
-        url = posts.messages[0].reply_markup.rows[0].buttons[0].url
-        sys.stdout.write("\r                                              \r")
-        sys.stdout.write(f"\r{abu2}[{yellow2}!{abu2}]{yellow} Memulai Mengunjungi Situs...!")
-        r = c.get(url,headers=ua)
-        soup = BeautifulSoup(r.text, "html.parser")
-        if soup.find('form', method="GET") is not None:
-            sys.stdout.write("\r                                              \r")
-            sys.stdout.write(f"\r{abu2}[{yellow2}!{abu2}]{yellow} Timer Detected....!")
-            waktu = soup.find('i', id="timer")
-            tunggu(int(waktu.text))
-            link = soup.find('form', method="GET").find('input').get('value')
-            r = c.get('https://clickbeeads.com/link.php?u='+link)
-        sleep(3)
-        posts = client(GetHistoryRequest(peer=channel_entity, limit=1, offset_date=None, offset_id=0, max_id=0, min_id=0, add_offset=0,hash=0))
-        sys.stdout.write("\r                                        \r")
-        sys.stdout.write("\r"+f"\r{abu2}[{hijau2}+{abu2}]{hijau} "+posts.messages[0].message.replace("â Task Completed!\n","")+"\n")
+	print("[*] Next Claim After 1 Hour . . .")
+
+	for i in range(3600):
+		print(str(i) + "/3600 seconds until next claim",end="\r")
+		sleep(1)
